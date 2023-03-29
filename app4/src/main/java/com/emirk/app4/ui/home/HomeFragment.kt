@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.emirk.app4.R
+import com.emirk.app4.data.local.entity.Person
 import com.emirk.app4.databinding.FragmentHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+    private val viewModel: HomeViewModel by viewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,17 +27,37 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        observe()
+        onClickButton()
+        return binding.root
+    }
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+    private fun onClickButton() = binding.btnSave.setOnClickListener {
+        if (viewModel.personLiveData.value?.name.isNullOrEmpty()) {
+            val person = Person(
+                0, binding.tvName.text.toString(),
+                binding.tvLastName.text.toString(),
+                binding.tvAge.text.toString()
+            )
+            viewModel.save(person)
+
+            binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
+        } else {
+            viewModel.delete("Emir")
+            binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
         }
-        return root
+    }
+
+    private fun observe() = lifecycleScope.launchWhenCreated {
+        viewModel.getData()
+        viewModel.personLiveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
+            } else {
+                binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
+            }
+        }
     }
 
     override fun onDestroyView() {
