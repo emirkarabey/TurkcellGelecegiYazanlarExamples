@@ -20,6 +20,7 @@ object StoreRoomModule {
     fun provideAppDatabase(@ApplicationContext context: Context): FavoriteDatabase{
         return Room.databaseBuilder(context, FavoriteDatabase::class.java, DATABASE_NAME)
             .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
             .build()
     }
 
