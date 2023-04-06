@@ -10,8 +10,8 @@ interface FavoriteDao {
     @Insert
     suspend fun save(person: Person)
 
-    @Query("DELETE FROM person WHERE name=:deleteName")
-    suspend fun deletePerson(deleteName: String)
+    @Query("DELETE FROM person WHERE uid=:id")
+    suspend fun deletePerson(id: Int)
 
     @Query("SELECT * FROM person")
     fun getPerson(): Person
