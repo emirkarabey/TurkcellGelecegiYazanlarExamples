@@ -28,29 +28,36 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        observe()
-        onClickButton()
         return binding.root
     }
 
-    private fun onClickButton() = binding.btnSave.setOnClickListener {
-        if (viewModel.personLiveData.value?.name.isNullOrEmpty()) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnSave.setOnClickListener {
             val person = Person(
-                0, binding.tvName.text.toString(),
-                binding.tvLastName.text.toString(),
-                binding.tvAge.text.toString()
+                0, binding.etName.text.toString(),
+                binding.etLastName.text.toString(),
+                binding.etAge.text.toString(),
+                arrayListOf("1", "2", "3", "4")
             )
-            viewModel.save(person)
+            if (viewModel.personLiveData.value?.name.isNullOrEmpty()) {
 
-            binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
-        } else {
-            viewModel.delete("Emir")
-            binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
+                viewModel.save(person)
+
+                binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
+            } else {
+                val deletePerson = viewModel.personLiveData.value
+                if (deletePerson != null) {
+                    viewModel.delete(deletePerson.uid)
+                }
+                binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
+            }
         }
+        observe()
+        viewModel.getPerson()
     }
 
     private fun observe() = lifecycleScope.launchWhenCreated {
-        viewModel.getData()
         viewModel.personLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.btnSave.setBackgroundResource(R.drawable.ic_baseline_favorite_24)

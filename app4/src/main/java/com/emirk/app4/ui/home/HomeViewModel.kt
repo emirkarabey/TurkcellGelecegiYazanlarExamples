@@ -21,11 +21,11 @@ class HomeViewModel @Inject constructor(
         dao.save(person)
     }
 
-    fun delete(deleteName: String) = viewModelScope.launch {
-        dao.deletePerson(deleteName)
+    fun delete(id: Int) = viewModelScope.launch {
+        dao.deletePerson(id)
     }
 
-    fun getData() = viewModelScope.launch(Dispatchers.IO) {
+    fun getPerson() = viewModelScope.launch(Dispatchers.IO) {
         personLiveData.postValue(dao.getPerson())
     }
 }
