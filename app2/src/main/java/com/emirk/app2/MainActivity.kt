@@ -12,11 +12,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        onBtnClicked()
-    }
 
-    private fun onBtnClicked() = dataBinding.btnClick.setOnClickListener {
-        val person = Person("Emir", "Karabey", "22")
-        dataBinding.person = person
+        dataBinding.btnClick.setOnClickListener {
+            val person = Person("Emir", "Karabey", "22")
+            dataBinding.person = person
+        }
     }
 }

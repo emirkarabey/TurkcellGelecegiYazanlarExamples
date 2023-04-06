@@ -12,12 +12,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        onBtnClick()
-    }
 
-    private fun onBtnClick() = binding.btnCount.setOnClickListener {
-        count += 1
-        binding.tvCounter.text = count.toString()
+        binding.btnCount.setOnClickListener {
+            count += 1
+            binding.tvCounter.text = count.toString()
+        }
     }
-
 }
