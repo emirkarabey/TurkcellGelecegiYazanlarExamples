@@ -26,6 +26,5 @@ class ThirdFragment : BaseFragment() {
             val action = ThirdFragmentDirections.actionThirdFragmentToFirstFragment()
             findNavController().navigate(action)
         }
-        showCurrentFragment(currentFragment = this)
     }
 }
