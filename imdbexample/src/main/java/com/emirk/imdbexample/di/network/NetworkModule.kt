@@ -1,15 +1,19 @@
 package com.emirk.imdbexample.di.network
 
-import com.emirk.imdbexample.BuildConfig
 import com.emirk.imdbexample.data.remote.ApiService
 import com.emirk.imdbexample.data.remote.util.ApiConstants
+import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
+
 
     @Singleton
     @Provides
@@ -19,35 +23,12 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
-        val httpClient = OkHttpClient.Builder().addInterceptor { chain ->
-            val original = chain.request()
-
-            // Add API key to the request
-            val requestBuilder = original.newBuilder()
-                .url(
-                    original.url.newBuilder()
-                    .addQueryParameter("api_key", BuildConfig.API_KEY)
-                    .build())
-                .method(original.method, original.body)
-
-            val request = requestBuilder.build()
-            chain.proceed(request)
-        }.build()
-
-        return httpClient
-    }
-
-    @Singleton
-    @Provides
     fun provideRetrofitAPI(
-        gsonConverterFactory: GsonConverterFactory,
-        okHttpClient: OkHttpClient
+        gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ApiConstants.BASE_URL)
             .addConverterFactory(gsonConverterFactory)
-            .client(okHttpClient)
             .build()
     }
 
@@ -58,4 +39,5 @@ object NetworkModule {
     ): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
 }
